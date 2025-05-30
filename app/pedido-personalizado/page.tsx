@@ -93,7 +93,17 @@ export default function CustomOrderPage() {
     const handleItemChange = (idx: number, key: "size" | "color" | "productType" | "quantity", value: string) => {
         setFormData((prev) => {
             const items = [...prev.items]
-            items[idx][key] = key === "quantity" ? Number(value) : value
+            const item = { ...items[idx] }
+            if (key === "quantity") {
+                item.quantity = Number(value)
+            } else if (key === "size") {
+                item.size = value
+            } else if (key === "color") {
+                item.color = value
+            } else if (key === "productType") {
+                item.productType = value
+            }
+            items[idx] = item
             return { ...prev, items }
         })
     }

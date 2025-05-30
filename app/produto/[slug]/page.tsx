@@ -47,11 +47,13 @@ const allProducts = [
 
 type Props = {
 	params: Promise<{ slug: string }>
-	searchParams?: { [key: string]: string | string[] | undefined }
+	searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export default function ProductPage({ params }: Props) {
+export default function ProductPage({ params, searchParams }: Props) {
 	const { slug } = React.use(params)
+	// Se precisar dos searchParams:
+	// const resolvedSearchParams = searchParams ? React.use(searchParams) : undefined
 
 	const product = products.find((p) => p.slug === slug)
 	if (!product) return <div>Produto não encontrado.</div>
