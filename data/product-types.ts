@@ -1,4 +1,5 @@
 export type Product = {
+  availableColors: { name: string; code: string }[]
   id: number
   slug: string
   name: string
