@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -75,6 +75,9 @@ export default function CustomOrderPage() {
     })
     const [errors, setErrors] = useState<Record<string, string>>({})
     const [success, setSuccess] = useState(false)
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => { setMounted(true); }, [])
 
     // Manipula campos do formulário principal
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -129,15 +132,12 @@ export default function CustomOrderPage() {
         if (!formData.name.trim()) newErrors.name = "Nome é obrigatório"
         if (!formData.phone.trim()) newErrors.phone = "Telefone é obrigatório"
         if (!formData.designDescription.trim()) newErrors.designDescription = "Descrição da estampa é obrigatória"
-        let totalQty = 0
         formData.items.forEach((item, idx) => {
             if (!item.productType) newErrors[`productType${idx}`] = "Tipo obrigatório"
             if (!item.size) newErrors[`size${idx}`] = "Tamanho obrigatório"
             if (!item.color) newErrors[`color${idx}`] = "Cor obrigatória"
-            if (!item.quantity || item.quantity < 1) newErrors[`quantity${idx}`] = "Mínimo 1"
-            totalQty += Number(item.quantity)
+            if (!item.quantity || item.quantity < 10) newErrors[`quantity${idx}`] = "Mínimo 10 por produto"
         })
-        if (totalQty < 10) newErrors.quantity = "Quantidade mínima total: 10"
         setErrors(newErrors)
         return Object.keys(newErrors).length === 0
     }
@@ -168,184 +168,187 @@ export default function CustomOrderPage() {
     return (
         <main className="container mx-auto px-4 py-8">
             <div className="max-w-3xl mx-auto">
-                <h1 className="text-3xl font-bold mb-2">Pedido Personalizado</h1>
+                {mounted && (
+                    <>
+                        <h1 className="text-3xl font-bold mb-2">Pedido Personalizado</h1>
 
-                <div className="bg-[#242424] text-white p-6 rounded-lg mb-8">
-                    <h2 className="text-xl font-semibold mb-4">Estampas Personalizadas</h2>
-                    <p className="mb-4">
-                        Crie peças únicas com suas próprias estampas! Envie seu design ou conte sua ideia e nós criamos para você.
-                    </p>
-                    <DesignExamplesModal />
-                </div>
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <h2 className="text-xl font-semibold">Detalhes do Pedido</h2>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                            <Label htmlFor="name" className="text-base">
-                                Nome Completo *
-                            </Label>
-                            <Input
-                                id="name"
-                                name="name"
-                                placeholder="Seu nome"
-                                value={formData.name}
-                                onChange={handleInputChange}
-                                className={errors.name ? "border-red-500" : ""}
-                            />
-                            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+                        <div className="bg-[#242424] text-white p-6 rounded-lg mb-8">
+                            <h2 className="text-xl font-semibold mb-4">Estampas Personalizadas</h2>
+                            <p className="mb-4">
+                                Crie peças únicas com suas próprias estampas! Envie seu design ou conte sua ideia e nós criamos para você.
+                            </p>
+                            <DesignExamplesModal />
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="phone" className="text-base">
-                                Telefone *
-                            </Label>
-                            <Input
-                                id="phone"
-                                name="phone"
-                                placeholder="(XX) XXXXX-XXXX"
-                                value={formData.phone}
-                                onChange={handleInputChange}
-                                className={errors.phone ? "border-red-500" : ""}
-                            />
-                            {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
-                        </div>
-                    </div>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <h2 className="text-xl font-semibold">Detalhes do Pedido</h2>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="designDescription" className="text-base">
-                            Descrição da Estampa *
-                        </Label>
-                        <Textarea
-                            id="designDescription"
-                            name="designDescription"
-                            placeholder="Descreva sua ideia de estampa: cores, estilo, texto, imagens, posicionamento, etc."
-                            rows={4}
-                            value={formData.designDescription}
-                            onChange={handleInputChange}
-                            className={errors.designDescription ? "border-red-500" : ""}
-                        />
-                        {errors.designDescription && <p className="text-red-500 text-sm">{errors.designDescription}</p>}
-                    </div>
-
-                    <div className="space-y-4 mt-8">
-                        <Label className="text-base">Itens do Pedido (tipo, tamanho, cor, quantidade):</Label>
-                        {formData.items.map((item, idx) => {
-                            const prodData = allProducts.find((prod) => prod.value === item.productType) || allProducts[0]
-                            return (
-                                <div key={idx} className="flex flex-col md:flex-row gap-4 items-center border-b pb-2">
-                                    {/* Tipo de produto */}
-                                    <Select
-                                        value={item.productType}
-                                        onValueChange={(value) => handleItemChange(idx, "productType", value)}
-                                    >
-                                        <SelectTrigger className="min-w-[160px]">
-                                            <SelectValue placeholder="Tipo de produto" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {allProducts.map((prod) => (
-                                                <SelectItem key={prod.value} value={prod.value}>{prod.label}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    {/* Tamanho */}
-                                    <Select
-                                        value={item.size}
-                                        onValueChange={(value) => handleItemChange(idx, "size", value)}
-                                    >
-                                        <SelectTrigger className="min-w-[100px]">
-                                            <SelectValue placeholder="Tamanho" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {(prodData.size || []).map((size: string) => (
-                                                <SelectItem key={size} value={size}>{size}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    {/* Cor */}
-                                    <Select
-                                        value={item.color}
-                                        onValueChange={(value) => handleItemChange(idx, "color", value)}
-                                    >
-                                        <SelectTrigger className="min-w-[160px]">
-                                            <SelectValue placeholder="Cor" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {allColors.map((color) => (
-                                                <SelectItem key={color.name} value={color.name}>
-                                                    <span className="inline-flex items-center gap-2">
-                                                        <span
-                                                            className="inline-block w-5 h-5 rounded border"
-                                                            style={{ background: color.code, borderColor: "#ccc" }}
-                                                        />
-                                                        {color.name}
-                                                    </span>
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    {/* Quantidade */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <Label htmlFor="name" className="text-base">
+                                        Nome Completo *
+                                    </Label>
                                     <Input
-                                        type="number"
-                                        min={1}
-                                        value={item.quantity || 1}
-                                        onChange={e => handleItemChange(idx, "quantity", e.target.value)}
-                                        className="w-20"
-                                        placeholder="Qtd."
+                                        id="name"
+                                        name="name"
+                                        placeholder="Seu nome"
+                                        value={formData.name}
+                                        onChange={handleInputChange}
+                                        className={errors.name ? "border-red-500" : ""}
                                     />
-                                    {formData.items.length > 1 && (
-                                        <Button
-                                            type="button"
-                                            variant="destructive"
-                                            size="icon"
-                                            onClick={() => removeItem(idx)}
-                                            title="Remover item"
-                                        >
-                                            ×
-                                        </Button>
-                                    )}
-                                    <div className="flex flex-col">
-                                        {errors[`productType${idx}`] && <p className="text-red-500 text-xs">{errors[`productType${idx}`]}</p>}
-                                        {errors[`size${idx}`] && <p className="text-red-500 text-xs">{errors[`size${idx}`]}</p>}
-                                        {errors[`color${idx}`] && <p className="text-red-500 text-xs">{errors[`color${idx}`]}</p>}
-                                        {errors[`quantity${idx}`] && <p className="text-red-500 text-xs">{errors[`quantity${idx}`]}</p>}
-                                    </div>
+                                    {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
                                 </div>
-                            )
-                        })}
-                        <Button type="button" variant="outline" onClick={addItem}>
-                            + Adicionar item
-                        </Button>
-                        {errors.quantity && <p className="text-red-500 text-sm">{errors.quantity}</p>}
-                    </div>
 
-                    <div className="bg-gray-100 p-4 rounded-lg">
-                        <h3 className="font-semibold mb-2">Informações Importantes:</h3>
-                        <ul className="list-disc pl-5 space-y-1 text-sm">
-                            <li>Quantidade mínima total: 10 produtos</li>
-                            <li>Tamanhos disponíveis: PP ao G4</li>
-                            <li>Formatos aceitos: JPG, PNG, PDF, AI, PSD</li>
-                            <li>Resolução recomendada: 300 DPI</li>
-                            <li>Entraremos em contato para ajustes e aprovação</li>
-                            <li>Envie sua arte após fazer o pedido via WhatsApp</li>
-                        </ul>
-                    </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="phone" className="text-base">
+                                        Telefone *
+                                    </Label>
+                                    <Input
+                                        id="phone"
+                                        name="phone"
+                                        placeholder="(XX) XXXXX-XXXX"
+                                        value={formData.phone}
+                                        onChange={handleInputChange}
+                                        className={errors.phone ? "border-red-500" : ""}
+                                    />
+                                    {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
+                                </div>
+                            </div>
 
-                    <Button type="submit" className="w-full bg-[#242424] hover:bg-[#3a3a3a] text-white" disabled={success}>
-                        {success ? (
-                            <span className="flex items-center">
-                                <Check className="h-5 w-5 mr-2" />
-                                Pedido enviado!
-                            </span>
-                        ) : (
-                            "Enviar Pedido"
-                        )}
-                    </Button>
-                </form>
+                            <div className="space-y-2">
+                                <Label htmlFor="designDescription" className="text-base">
+                                    Descrição da Estampa *
+                                </Label>
+                                <Textarea
+                                    id="designDescription"
+                                    name="designDescription"
+                                    placeholder="Descreva sua ideia de estampa: cores, estilo, texto, imagens, posicionamento, etc."
+                                    rows={4}
+                                    value={formData.designDescription}
+                                    onChange={handleInputChange}
+                                    className={errors.designDescription ? "border-red-500" : ""}
+                                />
+                                {errors.designDescription && <p className="text-red-500 text-sm">{errors.designDescription}</p>}
+                            </div>
+
+                            <div className="space-y-4 mt-8">
+                                <Label className="text-base">Itens do Pedido (tipo, tamanho, cor, quantidade):</Label>
+                                {formData.items.map((item, idx) => {
+                                    const prodData = allProducts.find((prod) => prod.value === item.productType) || allProducts[0]
+                                    return (
+                                        <div key={idx} className="flex flex-col md:flex-row gap-4 items-center border-b pb-2">
+                                            {/* Tipo de produto */}
+                                            <Select
+                                                value={item.productType}
+                                                onValueChange={(value) => handleItemChange(idx, "productType", value)}
+                                            >
+                                                <SelectTrigger className="min-w-[160px]">
+                                                    <SelectValue placeholder="Tipo de produto" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {allProducts.map((prod) => (
+                                                        <SelectItem key={prod.value} value={prod.value}>{prod.label}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            {/* Tamanho */}
+                                            <Select
+                                                value={item.size}
+                                                onValueChange={(value) => handleItemChange(idx, "size", value)}
+                                            >
+                                                <SelectTrigger className="min-w-[100px]">
+                                                    <SelectValue placeholder="Tamanho" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {(prodData.size || []).map((size: string) => (
+                                                        <SelectItem key={size} value={size}>{size}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            {/* Cor */}
+                                            <Select
+                                                value={item.color}
+                                                onValueChange={(value) => handleItemChange(idx, "color", value)}
+                                            >
+                                                <SelectTrigger className="min-w-[160px]">
+                                                    <SelectValue placeholder="Cor" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {allColors.map((color) => (
+                                                        <SelectItem key={color.name} value={color.name}>
+                                                            <span className="inline-flex items-center gap-2">
+                                                                <span
+                                                                    className="inline-block w-5 h-5 rounded border"
+                                                                    style={{ background: color.code, borderColor: "#ccc" }}
+                                                                />
+                                                                {color.name}
+                                                            </span>
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            {/* Quantidade */}
+                                            <Input
+                                                type="number"
+                                                min={10}
+                                                value={item.quantity || 10}
+                                                onChange={e => handleItemChange(idx, "quantity", e.target.value)}
+                                                className="w-20"
+                                                placeholder="Qtd."
+                                            />
+                                            {formData.items.length > 1 && (
+                                                <Button
+                                                    type="button"
+                                                    variant="destructive"
+                                                    size="icon"
+                                                    onClick={() => removeItem(idx)}
+                                                    title="Remover item"
+                                                >
+                                                    ×
+                                                </Button>
+                                            )}
+                                            <div className="flex flex-col">
+                                                {errors[`productType${idx}`] && <p className="text-red-500 text-xs">{errors[`productType${idx}`]}</p>}
+                                                {errors[`size${idx}`] && <p className="text-red-500 text-xs">{errors[`size${idx}`]}</p>}
+                                                {errors[`color${idx}`] && <p className="text-red-500 text-xs">{errors[`color${idx}`]}</p>}
+                                                {errors[`quantity${idx}`] && <p className="text-red-500 text-xs">{errors[`quantity${idx}`]}</p>}
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                                <Button type="button" variant="outline" onClick={addItem}>
+                                    + Adicionar item
+                                </Button>
+                                {errors.quantity && <p className="text-red-500 text-sm">{errors.quantity}</p>}
+                            </div>
+
+                            <div className="bg-gray-100 p-4 rounded-lg">
+                                <h3 className="font-semibold mb-2">Informações Importantes:</h3>
+                                <ul className="list-disc pl-5 space-y-1 text-sm">
+                                    <li>Quantidade mínima total: 10 produtos</li>
+                                    <li>Tamanhos disponíveis: PP ao G4</li>
+                                    <li>Formatos aceitos: JPG, PNG, PDF, AI, PSD</li>
+                                    <li>Resolução recomendada: 300 DPI</li>
+                                    <li>Entraremos em contato para ajustes e aprovação</li>
+                                    <li>Envie sua arte após fazer o pedido via WhatsApp</li>
+                                </ul>
+                            </div>
+
+                            <Button type="submit" className="w-full bg-[#242424] hover:bg-[#3a3a3a] text-white" disabled={success}>
+                                {success ? (
+                                    <span className="flex items-center">
+                                        <Check className="h-5 w-5 mr-2" />
+                                        Pedido enviado!
+                                    </span>
+                                ) : (
+                                    "Enviar Pedido"
+                                )}
+                            </Button>
+                        </form>
+                    </>
+                )}
             </div>
-
-            <WhatsAppButton phoneNumber="5548991684860" />
+            {mounted && <WhatsAppButton phoneNumber="5548991684860" />}
         </main>
     )
 }

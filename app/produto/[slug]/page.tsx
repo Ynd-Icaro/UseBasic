@@ -39,17 +39,21 @@ export default function ProductPage({ params, searchParams }: Props) {
         {
             size: product.size[0],
             color: product.color,
-            quantity: 1,
+            quantity: 10, // <-- mínimo já no início
         },
     ])
 
     // Recomendações aleatórias apenas no client para evitar hydration error
     const [recommendations, setRecommendations] = useState<typeof products | null>(null)
+    const [mounted, setMounted] = useState(false)
+
     useEffect(() => {
         const filtered = products.filter((p) => p.slug !== slug)
         const shuffled = filtered.sort(() => 0.5 - Math.random()).slice(0, 4)
         setRecommendations(shuffled)
     }, [slug])
+
+    useEffect(() => { setMounted(true); }, [])
 
     // Atualizar campo do item
     const handleItemChange = (
@@ -59,7 +63,14 @@ export default function ProductPage({ params, searchParams }: Props) {
     ) => {
         setItems((prev) =>
             prev.map((item, i) =>
-                i === idx ? { ...item, [key]: key === "quantity" ? Number(value) : value } : item
+                i === idx
+                    ? {
+                        ...item,
+                        [key]: key === "quantity"
+                            ? Math.max(10, Number(value))
+                            : value
+                    }
+                    : item
             )
         )
     }
@@ -92,6 +103,12 @@ export default function ProductPage({ params, searchParams }: Props) {
             )
         )
     }
+
+    // Soma total de produtos do kit
+    const totalQuantity = items.reduce((sum, item) => sum + Number(item.quantity), 0)
+
+    // Verifica se algum item está abaixo da quantidade mínima
+    const anyItemBelowMin = items.some(item => Number(item.quantity) < 10);
 
     return (
         <main className="container mx-auto px-4 py-8">
@@ -144,7 +161,7 @@ export default function ProductPage({ params, searchParams }: Props) {
                                             <option key={size} value={size}>{size}</option>
                                         ))}
                                     </select>
-                                    {/* Cor (dropdown para acessibilidade) */}
+                                    {/* Cor */}
                                     <select
                                         value={item.color}
                                         onChange={e => handleItemChange(idx, "color", e.target.value)}
@@ -154,6 +171,15 @@ export default function ProductPage({ params, searchParams }: Props) {
                                             <option key={color.name} value={color.name}>{color.name}</option>
                                         ))}
                                     </select>
+                                    {/* Quantidade */}
+                                    <input
+                                        type="number"
+                                        min={10}
+                                        value={item.quantity}
+                                        onChange={e => handleItemChange(idx, "quantity", e.target.value)}
+                                        className="border rounded px-2 py-1 w-16 text-sm"
+                                        style={{ width: 60 }}
+                                    />
                                     {items.length > 1 && (
                                         <Button
                                             type="button"
@@ -189,15 +215,30 @@ export default function ProductPage({ params, searchParams }: Props) {
                     <div className="text-2xl font-semibold mb-6">
                         R$ {product.price.toFixed(2)}
                     </div>
-                    <Button asChild>
+                    <div className="mb-2">
+                        <span className="text-sm text-gray-700">
+                            Quantidade total do kit: <b>{totalQuantity}</b> produto{totalQuantity !== 1 ? "s" : ""}
+                        </span>
+                        {totalQuantity < 10 && (
+                            <div className="text-red-600 text-sm mt-1">
+                                O pedido mínimo é de 10 peças por kit.
+                            </div>
+                        )}
+                    </div>
+                    <Button asChild disabled={anyItemBelowMin}>
                         <a
-                            href={`https://wa.me/5548991684860?text=Olá! Tenho interesse nos seguintes itens: ${items.map((item, idx) => `\n${idx + 1}. Produto: ${product.name}, Tamanho: ${item.size}, Cor: ${item.color}`).join("")}`}
+                            href={`https://wa.me/5548991684860?text=Olá! Tenho interesse nos seguintes itens: ${items.map((item, idx) => `\n${idx + 1}. Produto: ${product.name}, Tamanho: ${item.size}, Cor: ${item.color}, Quantidade: ${item.quantity}`).join("")}`}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
                             Comprar pelo WhatsApp
                         </a>
                     </Button>
+                    {anyItemBelowMin && (
+                        <div className="text-red-600 text-sm mt-1">
+                            O pedido mínimo é de 10 unidades por item do kit.
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -205,13 +246,16 @@ export default function ProductPage({ params, searchParams }: Props) {
             <section className="mt-16">
                 <h2 className="text-xl font-bold mb-4">Você também pode gostar</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                    {recommendations
+                    {mounted && recommendations
                         ? recommendations.map((rec) => (
                             <ProductCard key={rec.id} product={rec} />
                         ))
-                        : <div className="col-span-4 text-center text-gray-400">Carregando recomendações...</div>
+                        : null
                     }
                 </div>
+                {mounted && !recommendations && (
+                    <div className="col-span-4 text-center text-gray-400">Carregando recomendações...</div>
+                )}
             </section>
 
             <section className="mt-16">
