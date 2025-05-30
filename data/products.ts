@@ -19,6 +19,11 @@ export const products: Product[] = [
     size: ["PP", "P", "M", "G", "GG"],
     isNew: true,
     isSeasonal: false,
+    availableColors: [
+      { name: "Branco", code: "#fff" },
+      { name: "Preto", code: "#242424" },
+      { name: "Cinza", code: "#43464B" }
+    ]
   },
   {
     id: 2,
@@ -36,6 +41,11 @@ export const products: Product[] = [
     size: ["P", "M", "G", "GG"],
     isNew: true,
     isSeasonal: true,
+    availableColors: [
+      { name: "Branco", code: "#fff" },
+      { name: "Preto", code: "#242424" },
+      { name: "Cinza", code: "#43464B" }
+    ]
   },
   {
     id: 3,
@@ -53,6 +63,11 @@ export const products: Product[] = [
     size: ["PP", "P", "M", "G"],
     isNew: false,
     isSeasonal: true,
+    availableColors: [
+      { name: "Branco", code: "#fff" },
+      { name: "Preto", code: "#242424" },
+      { name: "Cinza", code: "#43464B" }
+    ]
   },
   {
     id: 4,
@@ -70,6 +85,11 @@ export const products: Product[] = [
     size: ["PP", "P", "M"],
     isNew: false,
     isSeasonal: false,
+    availableColors: [
+      { name: "Branco", code: "#fff" },
+      { name: "Preto", code: "#242424" },
+      { name: "Cinza", code: "#43464B" }
+    ]
   },
   {
     id: 5,
@@ -87,6 +107,11 @@ export const products: Product[] = [
     size: ["P", "M", "G", "GG"],
     isNew: true,
     isSeasonal: false,
+    availableColors: [
+      { name: "Branco", code: "#fff" },
+      { name: "Preto", code: "#242424" },
+      { name: "Cinza", code: "#43464B" }
+    ]
   },
   {
     id: 6,
@@ -104,6 +129,11 @@ export const products: Product[] = [
     size: ["P", "M", "G", "GG"],
     isNew: false,
     isSeasonal: true,
+    availableColors: [
+      { name: "Branco", code: "#fff" },
+      { name: "Preto", code: "#242424" },
+      { name: "Cinza", code: "#43464B" }
+    ]
   },
   {
     id: 7,
@@ -121,6 +151,11 @@ export const products: Product[] = [
     size: ["P", "M", "G", "GG"],
     isNew: true,
     isSeasonal: true,
+    availableColors: [
+      { name: "Branco", code: "#fff" },
+      { name: "Preto", code: "#242424" },
+      { name: "Cinza", code: "#43464B" }
+    ]
   },
   {
     id: 8,
@@ -138,6 +173,11 @@ export const products: Product[] = [
     size: ["P", "M", "G"],
     isNew: false,
     isSeasonal: true,
+    availableColors: [
+      { name: "Branco", code: "#fff" },
+      { name: "Preto", code: "#242424" },
+      { name: "Cinza", code: "#43464B" }
+    ]
   },
   {
     id: 9,
@@ -155,6 +195,11 @@ export const products: Product[] = [
     size: ["P", "M", "G", "GG"],
     isNew: false,
     isSeasonal: true,
+    availableColors: [
+      { name: "Branco", code: "#fff" },
+      { name: "Preto", code: "#242424" },
+      { name: "Cinza", code: "#43464B" }
+    ]
   },
   {
     id: 10,
@@ -172,5 +217,10 @@ export const products: Product[] = [
     size: ["M", "G", "GG"],
     isNew: true,
     isSeasonal: false,
+    availableColors: [
+      { name: "Branco", code: "#fff" },
+      { name: "Preto", code: "#242424" },
+      { name: "Cinza", code: "#43464B" }
+    ]
   },
 ]
