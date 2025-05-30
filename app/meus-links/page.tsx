@@ -59,7 +59,9 @@ export default function MeusLinks() {
           </div>
 
           <div className="mt-8 pt-6 border-t border-gray-200 text-center text-gray-500 text-sm">
-            &copy; {year ? year : ""} Basic Clothing. Todos os direitos reservados.
+            {year && (
+              <>&copy; {year} Basic Clothing. Todos os direitos reservados.</>
+            )}
           </div>
         </div>
       </div>

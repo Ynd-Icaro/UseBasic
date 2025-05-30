@@ -1,9 +1,10 @@
-'use client'
+"use client"
 
 import { useState } from "react"
 import Link from "next/link"
 import { ProductCard } from "@/components/product-card"
 import { WhatsAppButton } from "@/components/whatsapp-button"
+import { products } from "@/data/products"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -11,135 +12,6 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 
 export default function CatalogPage() {
-  // Product data
-  const products = [
-    {
-      id: 1,
-      name: "Camiseta Básica",
-      price: 49.9,
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/20243493-camiseta-brincar-dentro-3d-foto.jpg-4k1LtZOLoUTJf6hwur26hPR4NPuBf4.jpeg",
-      slug: "camiseta-basica",
-      category: "camisetas",
-      color: "preto",
-      size: ["PP", "P", "M", "G", "GG"],
-      isNew: true,
-      isSeasonal: false,
-    },
-    {
-      id: 2,
-      name: "Oversized",
-      price: 69.9,
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/istockphoto-685889060-2048x2048.jpg-WiVvaU4oxNQmLaXiMeWCb768f0oK5v.jpeg",
-      slug: "oversized",
-      category: "camisetas",
-      color: "preto",
-      size: ["P", "M", "G", "GG"],
-      isNew: true,
-      isSeasonal: true,
-    },
-    {
-      id: 3,
-      name: "Regata",
-      price: 39.9,
-      image: "/placeholder.svg?height=400&width=300",
-      slug: "regata",
-      category: "camisetas",
-      color: "cinza",
-      size: ["PP", "P", "M", "G"],
-      isNew: false,
-      isSeasonal: true,
-    },
-    {
-      id: 4,
-      name: "Cropped",
-      price: 45.9,
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/stock-photo-mockup-of-white-black-heather-crop-top-on-girl-set-of-fashion-clothes-for-design-print-pattern-2268768463.jpg-GfPW6ppDWmMXEkWKaw1ZmA72RKs3Tu.jpeg",
-      slug: "cropped",
-      category: "camisetas",
-      color: "branco",
-      size: ["PP", "P", "M"],
-      isNew: false,
-      isSeasonal: false,
-    },
-    {
-      id: 5,
-      name: "T-shirt",
-      price: 59.9,
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/istockphoto-1149035726-1024x1024.jpg-VRCbzS4JAn7cWPeL0QtZLrfWnH0Sd4.jpeg",
-      slug: "t-shirt",
-      category: "camisetas",
-      color: "branco",
-      size: ["P", "M", "G", "GG"],
-      isNew: true,
-      isSeasonal: false,
-    },
-    {
-      id: 6,
-      name: "Bermuda Mauricinho",
-      price: 79.9,
-      image: "/placeholder.svg?height=400&width=300",
-      slug: "bermuda-mauricinho",
-      category: "bermudas",
-      color: "bege",
-      size: ["P", "M", "G", "GG"],
-      isNew: false,
-      isSeasonal: true,
-    },
-    {
-      id: 7,
-      name: "Moletom Canguru",
-      price: 129.9,
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/istockphoto-1393264537-1024x1024.jpg-lzXX1nkEtZbNakAE4CrVB6RhVJ9118.jpeg",
-      slug: "moletom-canguru",
-      category: "moletons",
-      color: "preto",
-      size: ["P", "M", "G", "GG"],
-      isNew: true,
-      isSeasonal: true,
-    },
-    {
-      id: 8,
-      name: "Moletom Careca",
-      price: 119.9,
-      image: "/placeholder.svg?height=400&width=300",
-      slug: "moletom-careca",
-      category: "moletons",
-      color: "cinza",
-      size: ["P", "M", "G"],
-      isNew: false,
-      isSeasonal: true,
-    },
-    {
-      id: 9,
-      name: "Calça Moletom",
-      price: 99.9,
-      image: "/placeholder.svg?height=400&width=300",
-      slug: "calca-moletom",
-      category: "calcas",
-      color: "preto",
-      size: ["P", "M", "G", "GG"],
-      isNew: false,
-      isSeasonal: true,
-    },
-    {
-      id: 10,
-      name: "Corta Vento",
-      price: 149.9,
-      image: "/placeholder.svg?height=400&width=300",
-      slug: "corta-vento",
-      category: "jaquetas",
-      color: "vermelho",
-      size: ["M", "G", "GG"],
-      isNew: true,
-      isSeasonal: false,
-    },
-  ]
-
   // Filter state
   const [filters, setFilters] = useState({
     search: "",
@@ -189,11 +61,17 @@ export default function CatalogPage() {
 
   // Filtering logic
   const filteredProducts = products.filter((product) => {
+    // Busca por nome
     if (filters.search && !product.name.toLowerCase().includes(filters.search.toLowerCase())) return false
+    // Filtro por categoria
     if (filters.categories.length && !filters.categories.includes(product.category)) return false
+    // Filtro por cor
     if (filters.colors.length && !filters.colors.includes(product.color)) return false
+    // Filtro por tamanho
     if (filters.sizes.length && !product.size.some((s) => filters.sizes.includes(s))) return false
+    // Filtro por novo
     if (filters.isNew && !product.isNew) return false
+    // Filtro por temporada
     if (filters.isSeasonal && !product.isSeasonal) return false
     return true
   })

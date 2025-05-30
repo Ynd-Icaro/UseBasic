@@ -26,10 +26,17 @@ export function ProductGallery({ productName, images }: ProductGalleryProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full h-full">
       {/* Main Image */}
-      <div className="relative h-[500px] bg-gray-100 rounded-lg overflow-hidden">
-        <Image src={allImages[currentImage] || "/placeholder.svg"} alt={productName} fill className="object-cover" />
+      <div className="relative w-full h-full min-h-[300px] bg-gray-100 rounded-lg overflow-hidden">
+        <Image
+          src={allImages[currentImage] || "/placeholder.svg"}
+          alt={productName}
+          fill
+          className="object-cover w-full h-full"
+          sizes="100vw"
+          priority
+        />
 
         {allImages.length > 1 && (
           <>
@@ -37,6 +44,7 @@ export function ProductGallery({ productName, images }: ProductGalleryProps) {
               onClick={prevImage}
               className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 text-white p-2 rounded-full hover:bg-black/50 transition-colors"
               aria-label="Imagem anterior"
+              type="button"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
@@ -44,40 +52,12 @@ export function ProductGallery({ productName, images }: ProductGalleryProps) {
               onClick={nextImage}
               className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 text-white p-2 rounded-full hover:bg-black/50 transition-colors"
               aria-label="Próxima imagem"
+              type="button"
             >
               <ChevronRight className="h-5 w-5" />
             </button>
           </>
         )}
-      </div>
-
-      {/* Thumbnail Gallery */}
-      {allImages.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto">
-          {allImages.map((image, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentImage(index)}
-              className={`relative w-20 h-20 rounded-md overflow-hidden flex-shrink-0 border-2 ${
-                currentImage === index ? "border-[#242424]" : "border-gray-200"
-              }`}
-            >
-              <Image
-                src={image || "/placeholder.svg"}
-                alt={`${productName} ${index + 1}`}
-                fill
-                className="object-cover"
-              />
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Image Labels */}
-      <div className="text-center text-sm text-gray-500">
-        {currentImage === 0 && "Frente"}
-        {currentImage === 1 && "Costas"}
-        {currentImage > 1 && `Variação ${currentImage - 1}`}
       </div>
     </div>
   )

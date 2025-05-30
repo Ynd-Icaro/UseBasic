@@ -1,362 +1,248 @@
 "use client"
 
-import type React from "react"
-import { use, useState, useEffect } from "react"
-
+import React, { useState, useEffect } from "react"
 import Link from "next/link"
-import { ArrowLeft, Check } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Input } from "@/components/ui/input"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { ProductGallery } from "@/components/product-gallery"
+import { products } from "@/data/products"
+import { ProductCard } from "@/components/product-card"
 
-const products = [
-	{
-		id: 1,
-		name: "Camiseta Básica",
-		price: 49.9,
-		description:
-			"Camiseta básica de alta qualidade, confeccionada em 100% algodão. Perfeita para o dia a dia, confortável e durável.",
-		images: {
-			front: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-			back: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-			variations: [
-				"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-				"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-			],
-		},
-		slug: "camiseta-basica",
-	},
-	{
-		id: 2,
-		name: "Oversized",
-		price: 69.9,
-		description:
-			"Camiseta oversized com caimento perfeito. Estilo moderno e confortável para diversas ocasiões.",
-		images: {
-			front: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
-			back: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
-			variations: [
-				"https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
-				"https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
-			],
-		},
-		slug: "oversized",
-	},
-	{
-		id: 3,
-		name: "Regata",
-		price: 39.9,
-		description:
-			"Regata básica ideal para dias quentes. Tecido leve e confortável que proporciona liberdade de movimento.",
-		images: {
-			front: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=400&q=80",
-			back: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=400&q=80",
-			variations: [
-				"https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=400&q=80",
-				"https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=400&q=80",
-			],
-		},
-		slug: "regata",
-	},
-	{
-		id: 4,
-		name: "Cropped",
-		price: 45.9,
-		description:
-			"Cropped moderno e versátil. Combina com diversos looks e estilos.",
-		images: {
-			front: "/placeholder.svg?height=600&width=400&text=Cropped+Frente",
-			back: "/placeholder.svg?height=600&width=400&text=Cropped+Costas",
-			variations: [
-				"/placeholder.svg?height=600&width=400&text=Cropped+Cinza",
-				"/placeholder.svg?height=600&width=400&text=Cropped+Preto",
-			],
-		},
-		slug: "cropped",
-	},
-	{
-		id: 5,
-		name: "T-shirt",
-		price: 59.9,
-		description:
-			"T-shirt com design exclusivo. Conforto e estilo em uma única peça.",
-		images: {
-			front: "/placeholder.svg?height=600&width=400&text=T-shirt+Frente",
-			back: "/placeholder.svg?height=600&width=400&text=T-shirt+Costas",
-			variations: [
-				"/placeholder.svg?height=600&width=400&text=T-shirt+Cinza",
-				"/placeholder.svg?height=600&width=400&text=T-shirt+Preta",
-			],
-		},
-		slug: "t-shirt",
-	},
-	{
-		id: 6,
-		name: "Bermuda Mauricinho",
-		price: 79.9,
-		description:
-			"Bermuda estilo mauricinho, perfeita para ocasiões casuais. Confortável e estilosa.",
-		images: {
-			front: "/placeholder.svg?height=600&width=400&text=Bermuda+Frente",
-			back: "/placeholder.svg?height=600&width=400&text=Bermuda+Costas",
-			variations: [
-				"/placeholder.svg?height=600&width=400&text=Bermuda+Bege",
-				"/placeholder.svg?height=600&width=400&text=Bermuda+Azul",
-			],
-		},
-		slug: "bermuda-mauricinho",
-	},
-	{
-		id: 7,
-		name: "Moletom Canguru",
-		price: 129.9,
-		description:
-			"Moletom canguru com capuz e bolso frontal. Ideal para dias frios, confortável e quentinho.",
-		images: {
-			front: "/placeholder.svg?height=600&width=400&text=Moletom+Canguru+Frente",
-			back: "/placeholder.svg?height=600&width=400&text=Moletom+Canguru+Costas",
-			variations: [
-				"/placeholder.svg?height=600&width=400&text=Moletom+Canguru+Cinza",
-				"/placeholder.svg?height=600&width=400&text=Moletom+Canguru+Azul",
-			],
-		},
-		slug: "moletom-canguru",
-	},
-	{
-		id: 8,
-		name: "Moletom Careca",
-		price: 119.9,
-		description:
-			"Moletom careca com design minimalista. Perfeito para um visual casual e confortável.",
-		images: {
-			front: "/placeholder.svg?height=600&width=400&text=Moletom+Careca+Frente",
-			back: "/placeholder.svg?height=600&width=400&text=Moletom+Careca+Costas",
-			variations: [
-				"/placeholder.svg?height=600&width=400&text=Moletom+Careca+Preto",
-				"/placeholder.svg?height=600&width=400&text=Moletom+Careca+Cinza",
-			],
-		},
-		slug: "moletom-careca",
-	},
-	{
-		id: 9,
-		name: "Calça Moletom",
-		price: 99.9,
-		description:
-			"Calça moletom confortável e versátil. Ideal para momentos de lazer e conforto.",
-		images: {
-			front: "/placeholder.svg?height=600&width=400&text=Calça+Moletom+Frente",
-			back: "/placeholder.svg?height=600&width=400&text=Calça+Moletom+Costas",
-			variations: [
-				"/placeholder.svg?height=600&width=400&text=Calça+Preta",
-				"/placeholder.svg?height=600&width=400&text=Calça+Cinza",
-			],
-		},
-		slug: "calca-moletom",
-	},
-	{
-		id: 10,
-		name: "Corta Vento",
-		price: 149.9,
-		description:
-			"Corta vento leve e resistente. Proteção contra vento e chuva leve com estilo.",
-		images: {
-			front: "/placeholder.svg?height=600&width=400&text=Corta+Vento+Frente",
-			back: "/placeholder.svg?height=600&width=400&text=Corta+Vento+Costas",
-			variations: [
-				"/placeholder.svg?height=600&width=400&text=Corta+Vento+Vermelho",
-				"/placeholder.svg?height=600&width=400&text=Corta+Vento+Azul",
-			],
-		},
-		slug: "corta-vento",
-	},
+const allColors = [
+  { name: "Branco", code: "#fff" },
+  { name: "Azul Royal", code: "#4169e1" },
+  { name: "Verde Maldivas", code: "#00c7b7" },
+  { name: "Azul Marinho", code: "#1a237e" },
+  { name: "Preto", code: "#242424" },
+  { name: "Azul Escura - 15-3920", code: "#34568B" },
+  { name: "Verde Musgo Especial - 18-5918", code: "#4B6F44" },
+  { name: "Vermelho Especial 19 1559", code: "#9B2335" },
+  { name: "Vermelho Red Especial 19 1763", code: "#C72C48" },
+  { name: "Azul Turquesa Especial 18 4252", code: "#53B0AE" },
+  { name: "Marrom Lead Especial 17 1118", code: "#A7988A" },
+  { name: "Begue Serenidade Escura 11 0105", code: "#E6D3B3" },
+  { name: "Rosa Adormecida Escura - 18-2043", code: "#A26769" },
+  { name: "Cinza Estanho Escura - 19-4014", code: "#43464B" },
+  { name: "Laranja Juice 16 1358", code: "#FF8812" },
+  { name: "Begue Wood Especial 15 1308", code: "#D8CAB8" },
+  { name: "Amarelo Sunshine Especial 14 1064", code: "#FFDE59" },
+  { name: "Rosa Lobster 16 1520", code: "#E27396" },
+  { name: "Verde Militar K 18 0117", code: "#4B5320" },
+  { name: "Vermelho China 19 1650", code: "#BE0032" },
 ]
 
-export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
-	const { slug } = use(params)
-	const product = products.find((p) => p.slug === slug)
-	const [size, setSize] = useState("M")
-	const [quantity, setQuantity] = useState(10)
-	const [color, setColor] = useState("Preto")
-	const [error, setError] = useState("")
-	const [success, setSuccess] = useState(false)
-	const [isClient, setIsClient] = useState(false)
+const allProducts = [
+  { value: "camiseta-basica", label: "Camiseta Básica" },
+  { value: "oversized", label: "Oversized" },
+  { value: "regata", label: "Regata" },
+  { value: "cropped", label: "Cropped" },
+  { value: "t-shirt", label: "T-shirt" },
+  { value: "bermuda-mauricinho", label: "Bermuda Mauricinho" },
+  { value: "moletom-canguru", label: "Moletom Canguru" },
+  { value: "moletom-careca", label: "Moletom Careca" },
+  { value: "calca-moletom", label: "Calça Moletom" },
+  { value: "corta-vento", label: "Corta Vento" },
+]
 
-	useEffect(() => {
-		setIsClient(true)
-	}, [])
+export default function ProductPage({ params }: { params: { slug: string } }) {
+  const { slug } = params
+  const product = products.find((p) => p.slug === slug)
+  if (!product) return <div>Produto não encontrado.</div>
 
-	if (!product) {
-		return (
-			<div className="container mx-auto px-4 py-16 text-center">
-				<h1 className="text-2xl font-bold mb-4">Produto não encontrado</h1>
-				<Link href="/" className="text-blue-600 hover:underline">
-					Voltar para a página inicial
-				</Link>
-			</div>
-		)
-	}
+  const images = {
+    front: product.images.front,
+    back: product.images.back,
+    variations: product.images.variations || [],
+  }
 
-	const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const value = Number.parseInt(e.target.value)
-		setQuantity(value)
-		if (value < 10) {
-			setError("A quantidade mínima é de 10 produtos")
-		} else {
-			setError("")
-		}
-	}
+  // Recomendações aleatórias apenas no client para evitar hydration error
+  const [recommendations, setRecommendations] = useState<typeof products>([])
+  useEffect(() => {
+    const filtered = products.filter((p) => p.slug !== slug)
+    const shuffled = filtered.sort(() => 0.5 - Math.random()).slice(0, 4)
+    setRecommendations(shuffled)
+  }, [slug])
 
-	const handleOrder = () => {
-		if (quantity < 10) {
-			setError("A quantidade mínima é de 10 produtos")
-			return
-		}
+  // Estado para itens selecionados (tipo, tamanho, cor)
+  const [items, setItems] = useState([
+    {
+      productType: product.slug,
+      size: product.size[0],
+      color: product.color,
+      quantity: 1,
+    },
+  ])
 
-		const message = `Olá! Gostaria de encomendar ${quantity} unidades do produto ${product.name} no tamanho ${size} e na cor ${color}.`
-		const encodedMessage = encodeURIComponent(message)
-		const whatsappUrl = `https://wa.me/5548991684860?text=${encodedMessage}`
+  // Adicionar novo item
+  const addItem = () => {
+    setItems((prev) => [
+      ...prev,
+      {
+        productType: product.slug,
+        size: product.size[0],
+        color: product.color,
+        quantity: 1,
+      },
+    ])
+  }
 
-		setSuccess(true)
-		setTimeout(() => {
-			window.open(whatsappUrl, "_blank")
-			setSuccess(false)
-		}, 1500)
-	}
+  // Remover item
+  const removeItem = (idx: number) => {
+    setItems((prev) => prev.filter((_, i) => i !== idx))
+  }
 
-	return (
-		<main className="container mx-auto px-4 py-8">
-			<Link
-				href="/"
-				className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6"
-			>
-				<ArrowLeft className="h-4 w-4 mr-2" />
-				Voltar para o catálogo
-			</Link>
+  // Atualizar campo do item
+  const handleItemChange = (
+    idx: number,
+    key: "productType" | "size" | "color" | "quantity",
+    value: string
+  ) => {
+    setItems((prev) =>
+      prev.map((item, i) =>
+        i === idx ? { ...item, [key]: key === "quantity" ? Number(value) : value } : item
+      )
+    )
+  }
 
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-				{isClient && <ProductGallery productName={product.name} images={product.images} />}
+  // Para cada item, buscar as opções de tamanho e cor do produto selecionado
+  const getProductData = (slug: string) => products.find((p) => p.slug === slug)
 
-				<div>
-					<h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-					<p className="text-2xl font-semibold mb-4">
-						R$ {product.price.toFixed(2)}
-					</p>
-					<p className="text-gray-700 mb-6">{product.description}</p>
+  return (
+    <main className="container mx-auto px-4 py-8">
+      <Link
+        href="/"
+        className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6"
+      >
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Voltar para a página inicial
+      </Link>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        <div className="w-full flex flex-col items-center">
+          <div
+            className="w-full max-w-[420px] aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center mb-4 transition-all duration-300"
+          >
+            <ProductGallery images={images} productName={product.name} />
+          </div>
+          {/* Miniaturas das variações */}
+          {images.variations.length > 0 && (
+            <div className="flex gap-2 mt-2">
+              {[images.front, images.back, ...images.variations].map((img, idx) => (
+                <div key={idx} className="w-16 h-16 rounded overflow-hidden border bg-white flex items-center justify-center">
+                  <img
+                    src={img}
+                    alt={`${product.name} variação ${idx + 1}`}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+          <p className="text-gray-600 mb-4">{product.description}</p>
 
-					<div className="space-y-6">
-						<div>
-							<Label
-								htmlFor="size"
-								className="text-base font-medium"
-							>
-								Tamanho
-							</Label>
-							<RadioGroup
-								id="size"
-								value={size}
-								onValueChange={setSize}
-								className="flex flex-wrap gap-2 mt-2"
-							>
-								{["PP", "P", "M", "G", "GG"].map((s) => (
-									<div key={s} className="flex items-center">
-										<RadioGroupItem
-											value={s}
-											id={`size-${s}`}
-											className="peer sr-only"
-										/>
-										<Label
-											htmlFor={`size-${s}`}
-											className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-200 peer-data-[state=checked]:bg-[#242424] peer-data-[state=checked]:text-white cursor-pointer"
-										>
-											{s}
-										</Label>
-									</div>
-								))}
-							</RadioGroup>
-							<p className="text-sm text-gray-500 mt-1">
-								* Tamanhos disponíveis para encomenda: PP ao G4
-							</p>
-						</div>
+          {/* Itens do produto: tipo, tamanho, cor */}
+          <div className="mb-6">
+            <span className="font-semibold">Monte seu kit:</span>
+            <div className="space-y-4 mt-2">
+              {items.map((item, idx) => {
+                const prodData = getProductData(item.productType) || product
+                return (
+                  <div key={idx} className="flex flex-wrap gap-2 items-center border-b pb-2">
+                    {/* Tipo de produto */}
+                    <select
+                      value={item.productType}
+                      onChange={e => handleItemChange(idx, "productType", e.target.value)}
+                      className="border rounded px-2 py-1 text-sm"
+                    >
+                      {allProducts.map((prod) => (
+                        <option key={prod.value} value={prod.value}>{prod.label}</option>
+                      ))}
+                    </select>
+                    {/* Tamanho */}
+                    <select
+                      value={item.size}
+                      onChange={e => handleItemChange(idx, "size", e.target.value)}
+                      className="border rounded px-2 py-1 text-sm"
+                    >
+                      {(prodData.size || []).map((size: string) => (
+                        <option key={size} value={size}>{size}</option>
+                      ))}
+                    </select>
+                    {/* Cor */}
+                    <select
+                      value={item.color}
+                      onChange={e => handleItemChange(idx, "color", e.target.value)}
+                      className="border rounded px-2 py-1 text-sm"
+                    >
+                      {allColors.map((color) => (
+                        <option key={color.name} value={color.name}>{color.name}</option>
+                      ))}
+                    </select>
+                    {items.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => removeItem(idx)}
+                        title="Remover item"
+                      >
+                        ×
+                      </Button>
+                    )}
+                  </div>
+                )
+              })}
+              <Button type="button" variant="outline" onClick={addItem}>
+                + Adicionar item
+              </Button>
+            </div>
+          </div>
 
-						<div>
-							<Label
-								htmlFor="color"
-								className="text-base font-medium"
-							>
-								Cor
-							</Label>
-							<RadioGroup
-								id="color"
-								value={color}
-								onValueChange={setColor}
-								className="flex flex-wrap gap-2 mt-2"
-							>
-								{["Preto", "Branco", "Cinza", "Azul", "Vermelho"].map((c) => (
-									<div key={c} className="flex items-center">
-										<RadioGroupItem
-											value={c}
-											id={`color-${c}`}
-											className="peer sr-only"
-										/>
-										<Label
-											htmlFor={`color-${c}`}
-											className="flex px-4 h-10 items-center justify-center rounded-md border border-gray-200 peer-data-[state=checked]:bg-[#242424] peer-data-[state=checked]:text-white cursor-pointer"
-										>
-											{c}
-										</Label>
-									</div>
-								))}
-							</RadioGroup>
-						</div>
+          <div className="text-2xl font-semibold mb-6">
+            R$ {product.price.toFixed(2)}
+          </div>
+          <Button asChild>
+            <a
+              href={`https://wa.me/5548991684860?text=Olá! Tenho interesse nos seguintes itens: ${items.map((item, idx) => `\n${idx + 1}. Produto: ${allProducts.find(p => p.value === item.productType)?.label || item.productType}, Tamanho: ${item.size}, Cor: ${item.color}`).join("")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Comprar pelo WhatsApp
+            </a>
+          </Button>
+        </div>
+      </div>
 
-						<div>
-							<Label
-								htmlFor="quantity"
-								className="text-base font-medium"
-							>
-								Quantidade
-							</Label>
-							<div className="mt-2">
-								<Input
-									id="quantity"
-									type="number"
-									min={1}
-									value={quantity}
-									onChange={handleQuantityChange}
-									className="w-24"
-								/>
-							</div>
-							{error && (
-								<p className="text-red-500 text-sm mt-1">{error}</p>
-							)}
-							<p className="text-sm text-gray-500 mt-1">
-								* Quantidade mínima para encomenda: 10 unidades
-							</p>
-						</div>
+      {/* Barra de recomendações */}
+      <section className="mt-16">
+        <h2 className="text-xl font-bold mb-4">Você também pode gostar</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {recommendations.map((rec) => (
+            <ProductCard key={rec.id} product={rec} />
+          ))}
+        </div>
+      </section>
 
-						<Button
-							onClick={handleOrder}
-							className="w-full bg-[#242424] hover:bg-[#3a3a3a] text-white"
-							disabled={quantity < 10 || success}
-						>
-							{success ? (
-								<span className="flex items-center">
-									<Check className="h-5 w-5 mr-2" />
-									Pedido enviado!
-								</span>
-							) : (
-								"Encomendar via WhatsApp"
-							)}
-						</Button>
-					</div>
-				</div>
-			</div>
+      <section className="mt-16">
+        <h2 className="text-xl font-bold mb-4">Todas as cores disponíveis para personalização</h2>
+        <div className="flex flex-wrap gap-3">
+          {allColors.map((color) => (
+            <div key={color.name} className="flex flex-col items-center">
+              <div
+                className="w-7 h-7 rounded-full border-2 border-gray-300 mb-1"
+                style={{ background: color.code }}
+                title={color.name}
+              />
+              <span className="text-xs text-gray-700 text-center max-w-[80px]">{color.name}</span>
+            </div>
+          ))}
+        </div>
+      </section>
 
-			<WhatsAppButton phoneNumber="5548991684860" />
-		</main>
-	)
+      <WhatsAppButton phoneNumber="5548991684860" />
+    </main>
+  )
 }

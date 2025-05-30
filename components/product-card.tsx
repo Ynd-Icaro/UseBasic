@@ -1,42 +1,40 @@
 "use client"
 
-import Image from "next/image"
 import Link from "next/link"
-
-interface Product {
-  id: number
-  name: string
-  price: number
-  image: string
-  slug: string
-}
+import { ProductGallery } from "./product-gallery"
+import type { Product } from "@/data/products"
 
 export function ProductCard({ product }: { product: Product }) {
-  // Mapear imagens reais para os produtos
-  const getProductImage = (productName: string) => {
-  
-    switch (productName.toLowerCase()) {
-      case "camiseta básica":
-        return "/camiseta-basica.jpg"
-      default:
-        return product.image || "/placeholder.svg"
-    }
-  }
-
   return (
-    <div className="group">
-      <Link href={`/produto/${product.slug}`}>
-        <div className="overflow-hidden rounded-lg bg-gray-100 mb-3">
-          <Image
-            src={getProductImage(product.name) || "/placeholder.svg"}
-            alt={product.name}
-            width={300}
-            height={400}
-            className="h-[300px] w-full object-cover transition-transform group-hover:scale-105"
-          />
-        </div>
-        <h3 className="text-lg font-medium">{product.name}</h3>
-      </Link>
-    </div>
+    <Link
+      href={`/produto/${product.slug}`}
+      className="block group border rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition"
+    >
+      <div className="mb-2">
+        <ProductGallery
+          productName={product.name}
+          images={{
+            front: product.images.front,
+            back: product.images.back,
+            variations: product.images.variations || [],
+          }}
+        />
+      </div>
+      <div className="px-4 pb-4">
+        <h2 className="font-semibold text-lg mb-1">{product.name}</h2>
+        <div className="text-gray-600 text-sm mb-1 capitalize">{product.category}</div>
+        <div className="font-bold text-xl mb-2">R$ {product.price.toFixed(2)}</div>
+        {product.isNew && (
+          <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded mr-2">
+            Novo
+          </span>
+        )}
+        {product.isSeasonal && (
+          <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+            Temporada
+          </span>
+        )}
+      </div>
+    </Link>
   )
 }
