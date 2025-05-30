@@ -1,4 +1,4 @@
-import type { Product } from "../../data/product-types"
+import type { Product } from './product-types';
 
 // Não exporte type aqui! Apenas os dados.
 

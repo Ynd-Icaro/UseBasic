@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { ProductGallery } from "@/components/product-gallery"
-import { products, } from "@/data/products"
+import { products } from "@/data/products" 
 import { ProductCard } from "@/components/product-card"
 
 const allColors = [
