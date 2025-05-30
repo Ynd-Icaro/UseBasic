@@ -3,7 +3,9 @@ export type Product = {
   name: string
   price: number
   description: string
-  images: { front: string; back: string }
+  images: {
+	  variations: never[] front: string; back: string 
+}
   slug: string
   category: string
   color: string
