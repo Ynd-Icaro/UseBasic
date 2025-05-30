@@ -1,18 +1,6 @@
-export type Product = {
-  id: number
-  name: string
-  price: number
-  description: string
-  images: {
-	  variations: never[] front: string; back: string 
-}
-  slug: string
-  category: string
-  color: string
-  size: string[]
-  isNew: boolean
-  isSeasonal: boolean
-}
+import type { Product } from "../../data/product-types"
+
+// Não exporte type aqui! Apenas os dados.
 
 export const products: Product[] = [
   {
@@ -23,6 +11,7 @@ export const products: Product[] = [
     images: {
       front: "/img/camiseta-basica-frente.jpg",
       back: "/img/camiseta-basica-costas.jpg",
+      variations: []
     },
     slug: "camiseta-basica",
     category: "camisetas",
@@ -39,6 +28,7 @@ export const products: Product[] = [
     images: {
       front: "/img/oversized-frente.jpg",
       back: "/img/oversized-costas.jpg",
+      variations: []
     },
     slug: "oversized",
     category: "camisetas",
@@ -55,6 +45,7 @@ export const products: Product[] = [
     images: {
       front: "/img/regata-frente.jpg",
       back: "/img/regata-costas.jpg",
+      variations: []
     },
     slug: "regata",
     category: "camisetas",
@@ -71,6 +62,7 @@ export const products: Product[] = [
     images: {
       front: "/img/cropped-frente.jpg",
       back: "/img/cropped-costas.jpg",
+      variations: []
     },
     slug: "cropped",
     category: "camisetas",
@@ -87,6 +79,7 @@ export const products: Product[] = [
     images: {
       front: "/img/t-shirt-frente.jpg",
       back: "/img/t-shirt-costas.jpg",
+      variations: []
     },
     slug: "t-shirt",
     category: "camisetas",
@@ -103,6 +96,7 @@ export const products: Product[] = [
     images: {
       front: "/img/bermuda-mauricinho-frente.jpg",
       back: "/img/bermuda-mauricinho-costas.jpg",
+      variations: []
     },
     slug: "bermuda-mauricinho",
     category: "bermudas",
@@ -119,6 +113,7 @@ export const products: Product[] = [
     images: {
       front: "/img/moletom-canguru-frente.jpg",
       back: "/img/moletom-canguru-costas.jpg",
+      variations: []
     },
     slug: "moletom-canguru",
     category: "moletons",
@@ -135,6 +130,7 @@ export const products: Product[] = [
     images: {
       front: "/img/moletom-careca-frente.jpg",
       back: "/img/moletom-careca-costas.jpg",
+      variations: []
     },
     slug: "moletom-careca",
     category: "moletons",
@@ -151,6 +147,7 @@ export const products: Product[] = [
     images: {
       front: "/img/calca-moletom-frente.jpg",
       back: "/img/calca-moletom-costas.jpg",
+      variations: []
     },
     slug: "calca-moletom",
     category: "calcas",
@@ -167,6 +164,7 @@ export const products: Product[] = [
     images: {
       front: "/img/corta-vento-frente.jpg",
       back: "/img/corta-vento-costas.jpg",
+      variations: []
     },
     slug: "corta-vento",
     category: "jaquetas",

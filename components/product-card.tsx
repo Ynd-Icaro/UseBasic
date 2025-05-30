@@ -2,7 +2,8 @@
 
 import Link from "next/link"
 import { ProductGallery } from "./product-gallery"
-import type { Product } from "@/data/products"
+import type { products } from "@/data/products"
+import { Product } from "../../data/product-types"
 
 export function ProductCard({ product }: { product: Product }) {
   return (

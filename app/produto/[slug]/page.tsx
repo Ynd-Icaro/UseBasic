@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { ProductGallery } from "@/components/product-gallery"
-import { products } from "@/data/products"
+import { products, } from "@/data/products"
 import { ProductCard } from "@/components/product-card"
 
 const allColors = [
@@ -46,12 +46,13 @@ const allProducts = [
 ]
 
 type Props = {
-	params: { slug: string }
+	params: Promise<{ slug: string }>
 	searchParams?: { [key: string]: string | string[] | undefined }
 }
 
 export default function ProductPage({ params }: Props) {
-	const { slug } = params
+	const { slug } = React.use(params)
+
 	const product = products.find((p) => p.slug === slug)
 	if (!product) return <div>Produto não encontrado.</div>
 

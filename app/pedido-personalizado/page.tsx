@@ -1,4 +1,5 @@
-import type { Metadata, ResolvingMetadata } from "next"
+"use client"
+
 import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -50,8 +51,23 @@ const allProducts = [
     { label: "Corta Vento", value: "corta-vento", size: allSizes },
 ]
 
+// Define types above your component
+type Item = {
+    productType: string
+    size: string
+    color: string
+    quantity: number
+}
+
+type FormData = {
+    name: string
+    phone: string
+    designDescription: string
+    items: Item[]
+}
+
 export default function CustomOrderPage() {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormData>({
         name: "",
         phone: "",
         designDescription: "",
