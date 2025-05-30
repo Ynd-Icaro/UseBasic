@@ -68,7 +68,7 @@ export default function CatalogPage() {
     // Filtro por cor
     if (filters.colors.length && !filters.colors.includes(product.color)) return false
     // Filtro por tamanho
-    if (filters.sizes.length && !product.size.some((s) => filters.sizes.includes(s))) return false
+    if (filters.sizes.length && !product.size.some((s: string) => filters.sizes.includes(s))) return false
     // Filtro por novo
     if (filters.isNew && !product.isNew) return false
     // Filtro por temporada
