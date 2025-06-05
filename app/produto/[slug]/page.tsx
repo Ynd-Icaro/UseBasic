@@ -8,6 +8,7 @@ import { WhatsAppButton } from "@/components/whatsapp-button"
 import { ProductGallery } from "@/components/product-gallery"
 import { products } from "@/data/products" 
 import { ProductCard } from "@/components/product-card"
+import { getProductImagesAndColors } from "@/data/image-utils";
 
 const defaultColors = [
     { name: "Branco", code: "#fff" },
@@ -17,13 +18,22 @@ const defaultColors = [
     { name: "Vermelho", code: "#BE0032" },
 ]
 
+const CAMISA_BASICA_CORES = [
+  "branco", "preto", "cinza", "azul-royal", "verde-maldivas", "azul-marinho",
+  "azul-escura-15-3920", "verde-musgo-especial-18-5918", "vermelho-especial-19-1559",
+  "vermelho-red-especial-19-1763", "azul-turquesa-especial-18-4252", "marrom-lead-especial-17-1118",
+  "begue-serenidade-escura-11-0105", "rosa-adormecida-escura-18-2043", "cinza-estanho-escura-19-4014",
+  "laranja-juice-16-1358", "begue-wood-especial-15-1308", "amarelo-sunshine-especial-14-1064",
+  "rosa-lobster-16-1520", "verde-militar-k-18-0117", "vermelho-china-19-1650"
+];
+
 type Props = {
-    params: Promise<{ slug: string }>
-    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
+    params: { slug: string }
+    searchParams?: { [key: string]: string | string[] | undefined }
 }
 
 export default function ProductPage({ params, searchParams }: Props) {
-    const { slug } = React.use(params)
+    const { slug } = params
 
     const product = products.find((p) => p.slug === slug)
     if (!product) return <div>Produto não encontrado.</div>
@@ -42,6 +52,9 @@ export default function ProductPage({ params, searchParams }: Props) {
             quantity: 10, // <-- mínimo já no início
         },
     ])
+
+    // Estado para cor selecionada na galeria
+    const [selectedColor, setSelectedColor] = useState(CAMISA_BASICA_CORES[0]);
 
     // Recomendações aleatórias apenas no client para evitar hydration error
     const [recommendations, setRecommendations] = useState<typeof products | null>(null)
@@ -95,20 +108,36 @@ export default function ProductPage({ params, searchParams }: Props) {
     // Cores disponíveis para o produto (se houver), senão cores padrões
     const productColors = product?.availableColors || defaultColors
 
-    // Atualiza cor ao clicar na bolinha
+    // Imagens e cores do produto (de acordo com o slug)
+    const imagesAndColors = getProductImagesAndColors(product.slug);
+
+    // Atualiza cor do item e da galeria ao clicar na bolinha
     const handleColorClick = (color: string) => {
+        setSelectedColor(color);
         setItems((prev) =>
             prev.map((item, i) =>
                 i === 0 ? { ...item, color } : item
             )
-        )
-    }
+        );
+    };
+
+    // Imagem correspondente à cor selecionada
+    const selectedImageObj = imagesAndColors.find((img: { color: string }) => img.color === selectedColor);
 
     // Soma total de produtos do kit
     const totalQuantity = items.reduce((sum, item) => sum + Number(item.quantity), 0)
 
     // Verifica se algum item está abaixo da quantidade mínima
     const anyItemBelowMin = items.some(item => Number(item.quantity) < 10);
+
+    // Se for a camiseta básica, use o padrão dinâmico para a imagem da frente
+    const isCamisaBasica = product.slug === "camiseta-basica";
+    const getCamisaBasicaImage = (color: string) =>
+      `/img/camisa-basica-${color}-frente.jpg`;
+
+    const imageToShow = isCamisaBasica
+      ? getCamisaBasicaImage(selectedColor)
+      : selectedImageObj?.src || images.front;
 
     return (
         <main className="container mx-auto px-4 py-8">
@@ -124,7 +153,12 @@ export default function ProductPage({ params, searchParams }: Props) {
                     <div
                         className="w-full max-w-[420px] aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center mb-4 transition-all duration-300"
                     >
-                        <ProductGallery images={images} productName={product.name} />
+                        <img
+                          src={imageToShow}
+                          alt={selectedColor}
+                          className="object-cover w-full h-full"
+                          onError={e => { (e.target as HTMLImageElement).src = "/img/placeholder.jpg" }}
+                        />
                     </div>
                     {/* Miniaturas das variações */}
                     {images.variations.length > 0 && (
@@ -199,7 +233,20 @@ export default function ProductPage({ params, searchParams }: Props) {
                         </div>
                         {/* Bolinhas de cor clicáveis */}
                         <div className="flex gap-2 mt-4">
-                            {productColors.map((color) => (
+                          {isCamisaBasica
+                            ? CAMISA_BASICA_CORES.map((color) => (
+                                <button
+                                  key={color}
+                                  type="button"
+                                  className={`w-7 h-7 rounded-full border-2 ${selectedColor === color ? "border-black" : "border-gray-300"}`}
+                                  style={{
+                                    background: `url(${getCamisaBasicaImage(color)}) center/cover no-repeat`
+                                  }}
+                                  title={color}
+                                  onClick={() => setSelectedColor(color)}
+                                />
+                              ))
+                            : productColors.map((color) => (
                                 <button
                                     key={color.name}
                                     type="button"
