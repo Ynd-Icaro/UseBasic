@@ -3,6 +3,11 @@ import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
+type Props = {
+  params: { slug: string }
+  searchParams?: { [key: string]: string | string[] | undefined }
+}
+
 export function Header() {
   return (
     <header className="bg-white border-b sticky top-0 z-50">
@@ -53,4 +58,9 @@ export function Header() {
       </div>
     </header>
   )
+}
+
+export default function ProductPage({ params, searchParams }: Props) {
+  const { slug } = params;
+  // ...restante do código
 }
