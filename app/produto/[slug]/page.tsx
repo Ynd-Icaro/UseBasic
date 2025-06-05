@@ -8,6 +8,7 @@ import { WhatsAppButton } from "@/components/whatsapp-button"
 import { ProductGallery } from "@/components/product-gallery"
 import { products } from "@/data/products" 
 import { ProductCard } from "@/components/product-card"
+import { getProductImagesAndColors } from "@/data/image-utils"
 
 const defaultColors = [
     { name: "Branco", code: "#fff" },
@@ -43,17 +44,21 @@ export default function ProductPage({ params, searchParams }: Props) {
         },
     ])
 
+    // Estado para cor selecionada na galeria
+    const [selectedColor, setSelectedColor] = useState(
+        (getProductImagesAndColors(product.slug)[0]?.color) || product.color
+    );
+
     // Recomendações aleatórias apenas no client para evitar hydration error
     const [recommendations, setRecommendations] = useState<typeof products | null>(null)
-    const [mounted, setMounted] = useState(false)
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, [])
 
     useEffect(() => {
         const filtered = products.filter((p) => p.slug !== slug)
         const shuffled = filtered.sort(() => 0.5 - Math.random()).slice(0, 4)
         setRecommendations(shuffled)
     }, [slug])
-
-    useEffect(() => { setMounted(true); }, [])
 
     // Atualizar campo do item
     const handleItemChange = (
@@ -95,14 +100,21 @@ export default function ProductPage({ params, searchParams }: Props) {
     // Cores disponíveis para o produto (se houver), senão cores padrões
     const productColors = product?.availableColors || defaultColors
 
-    // Atualiza cor ao clicar na bolinha
+    // Imagens e cores do produto (de acordo com o slug)
+    const imagesAndColors = getProductImagesAndColors(product.slug);
+
+    // Atualiza cor do item e da galeria ao clicar na bolinha
     const handleColorClick = (color: string) => {
+        setSelectedColor(color);
         setItems((prev) =>
             prev.map((item, i) =>
                 i === 0 ? { ...item, color } : item
             )
-        )
-    }
+        );
+    };
+
+    // Imagem correspondente à cor selecionada
+    const selectedImageObj = imagesAndColors.find((img: { color: string }) => img.color === selectedColor);
 
     // Soma total de produtos do kit
     const totalQuantity = items.reduce((sum, item) => sum + Number(item.quantity), 0)
@@ -124,7 +136,16 @@ export default function ProductPage({ params, searchParams }: Props) {
                     <div
                         className="w-full max-w-[420px] aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center mb-4 transition-all duration-300"
                     >
-                        <ProductGallery images={images} productName={product.name} />
+                        {/* Exibe a imagem da cor selecionada, se existir */}
+                        {selectedImageObj ? (
+                            <img
+                                src={selectedImageObj.src}
+                                alt={selectedColor}
+                                className="object-cover w-full h-full"
+                            />
+                        ) : (
+                            <ProductGallery images={images} productName={product.name} />
+                        )}
                     </div>
                     {/* Miniaturas das variações */}
                     {images.variations.length > 0 && (
@@ -199,16 +220,29 @@ export default function ProductPage({ params, searchParams }: Props) {
                         </div>
                         {/* Bolinhas de cor clicáveis */}
                         <div className="flex gap-2 mt-4">
-                            {productColors.map((color) => (
-                                <button
-                                    key={color.name}
-                                    type="button"
-                                    className={`w-7 h-7 rounded-full border-2 ${items[0].color === color.name ? "border-black" : "border-gray-300"}`}
-                                    style={{ background: color.code }}
-                                    title={color.name}
-                                    onClick={() => handleColorClick(color.name)}
-                                />
-                            ))}
+                            {imagesAndColors.length > 0
+                                ? imagesAndColors.map((img) => (
+                                    <button
+                                        key={img.color}
+                                        type="button"
+                                        className={`w-7 h-7 rounded-full border-2 ${selectedColor === img.color ? "border-black" : "border-gray-300"}`}
+                                        style={{
+                                            background: `url(${img.src}) center/cover no-repeat`
+                                        }}
+                                        title={img.color}
+                                        onClick={() => handleColorClick(img.color)}
+                                    />
+                                ))
+                                : productColors.map((color) => (
+                                    <button
+                                        key={color.name}
+                                        type="button"
+                                        className={`w-7 h-7 rounded-full border-2 ${items[0].color === color.name ? "border-black" : "border-gray-300"}`}
+                                        style={{ background: color.code }}
+                                        title={color.name}
+                                        onClick={() => handleColorClick(color.name)}
+                                    />
+                                ))}
                         </div>
                     </div>
 
