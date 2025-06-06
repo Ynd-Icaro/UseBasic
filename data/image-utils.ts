@@ -27,8 +27,8 @@ export function getProductImagesAndColors(slug: string) {
   if (slug === "camiseta-basica") {
     return CAMISA_BASICA_CORES.map((color) => ({
       color,
-      src: `/img/Camiseta-Basica-${color}-Frente.webp`
-    }));
+      src: `/img/camiseta-basica-${color}-frente.webp`
+    }))
   }
   return [];
 }
