@@ -11,4 +11,4 @@ export type Product = {
   color: string
   size: string[]
   // Adicione outros campos conforme necessário
-}
+}   
