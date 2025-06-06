@@ -32,4 +32,3 @@ export function getProductImagesAndColors(slug: string) {
   }
   return [];
 }
-""
