@@ -57,7 +57,7 @@ export function ProductCard({ product }: { product: Product }) {
             src={getImage()}
             alt={selectedColor}
             className="object-contain w-full h-full rounded bg-white"
-            onError={e => { (e.target as HTMLImageElement).src = "/img/placeholder.jpg" }}
+            onError={e => { (e.target as HTMLImageElement).src = "/img/placeholder.webp" }}
           />
           <button
             className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-1 z-10"
