@@ -51,14 +51,15 @@ export default function ProductPage({ params, searchParams }: Props) {
 
     // Recomendações aleatórias apenas no client para evitar hydration error
     const [recommendations, setRecommendations] = useState<typeof products | null>(null)
-    const [mounted, setMounted] = useState(false);
-    useEffect(() => { setMounted(true); }, [])
+    const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
         const filtered = products.filter((p) => p.slug !== slug)
         const shuffled = filtered.sort(() => 0.5 - Math.random()).slice(0, 4)
         setRecommendations(shuffled)
     }, [slug])
+
+    useEffect(() => { setMounted(true); }, [])
 
     // Atualizar campo do item
     const handleItemChange = (
@@ -277,20 +278,16 @@ export default function ProductPage({ params, searchParams }: Props) {
             </div>
 
             {/* Barra de recomendações */}
-            <section className="mt-16">
-                <h2 className="text-xl font-bold mb-4">Você também pode gostar</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                    {mounted && recommendations
-                        ? recommendations.map((rec) => (
+            {mounted && recommendations && (
+                <section className="mt-16">
+                    <h2 className="text-xl font-bold mb-4">Você também pode gostar</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                        {recommendations.map((rec) => (
                             <ProductCard key={rec.id} product={rec} />
-                        ))
-                        : null
-                    }
-                </div>
-                {mounted && !recommendations && (
-                    <div className="col-span-4 text-center text-gray-400">Carregando recomendações...</div>
-                )}
-            </section>
+                        ))}
+                    </div>
+                </section>
+            )}
 
             <section className="mt-16">
                 <h2 className="text-xl font-bold mb-4">Cores populares para personalização</h2>
@@ -308,7 +305,7 @@ export default function ProductPage({ params, searchParams }: Props) {
                 </div>
             </section>
 
-            <WhatsAppButton phoneNumber="5548991684860" />
+            <WhatsAppButton phoneNumber="55489996849324" />
         </main>
     )
 }

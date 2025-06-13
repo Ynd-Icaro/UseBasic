@@ -32,7 +32,7 @@ export default function CatalogPage() {
   ]
 
   const colors = [
-    { id: "preto", label: "Preto" },
+    { id: "Preta", label: "Preto" },
     { id: "branco", label: "Branco" },
     { id: "cinza", label: "Cinza" },
     { id: "azul", label: "Azul" },

@@ -9,13 +9,13 @@ export const products: Product[] = [
     price: 49.9,
     description: "Camiseta básica de alta qualidade, confeccionada em 100% algodão. Perfeita para o dia a dia, confortável e durável.",
     images: {
-      front: "/img/camiseta-basica-frente.jpg",
-      back: "/img/camiseta-basica-costas.jpg",
+      front: "/img/camiseta-basica-frente.webp",
+      back: "/img/camiseta-basica-costas.webp",
       variations: []
     },
     slug: "camiseta-basica",
     category: "camisetas",
-    color: "preto",
+    color: "Preta",
     size: ["PP", "P", "M", "G", "GG"],
     isNew: true,
     isSeasonal: false,
@@ -31,13 +31,13 @@ export const products: Product[] = [
     price: 69.9,
     description: "Camiseta oversized com caimento perfeito. Estilo moderno e confortável para diversas ocasiões.",
     images: {
-      front: "/img/oversized-frente.jpg",
-      back: "/img/oversized-costas.jpg",
+      front: "/img/oversized-frente.webp",
+      back: "/img/oversized-costas.webp",
       variations: []
     },
     slug: "oversized",
     category: "camisetas",
-    color: "preto",
+    color: "Preta",
     size: ["P", "M", "G", "GG"],
     isNew: true,
     isSeasonal: true,
@@ -53,8 +53,8 @@ export const products: Product[] = [
     price: 39.9,
     description: "Regata básica ideal para dias quentes. Tecido leve e confortável que proporciona liberdade de movimento.",
     images: {
-      front: "/img/regata-frente.jpg",
-      back: "/img/regata-costas.jpg",
+      front: "/img/regata-frente.webp",
+      back: "/img/regata-costas.webp",
       variations: []
     },
     slug: "regata",
@@ -75,8 +75,8 @@ export const products: Product[] = [
     price: 45.9,
     description: "Cropped moderno e versátil. Combina com diversos looks e estilos.",
     images: {
-      front: "/img/cropped-frente.jpg",
-      back: "/img/cropped-costas.jpg",
+      front: "/img/cropped-frente.webp",
+      back: "/img/cropped-costas.webp",
       variations: []
     },
     slug: "cropped",
@@ -97,8 +97,8 @@ export const products: Product[] = [
     price: 59.9,
     description: "T-shirt com design exclusivo. Conforto e estilo em uma única peça.",
     images: {
-      front: "/img/t-shirt-frente.jpg",
-      back: "/img/t-shirt-costas.jpg",
+      front: "/img/t-shirt-frente.webp",
+      back: "/img/t-shirt-costas.webp",
       variations: []
     },
     slug: "t-shirt",
@@ -119,8 +119,8 @@ export const products: Product[] = [
     price: 79.9,
     description: "Bermuda estilo mauricinho, perfeita para ocasiões casuais. Confortável e estilosa.",
     images: {
-      front: "/img/bermuda-mauricinho-frente.jpg",
-      back: "/img/bermuda-mauricinho-costas.jpg",
+      front: "/img/bermuda-mauricinho-preta-frente.webp",
+      back: "/img/bermuda-mauricinho-preta-costas.webp",
       variations: []
     },
     slug: "bermuda-mauricinho",
@@ -141,13 +141,13 @@ export const products: Product[] = [
     price: 129.9,
     description: "Moletom canguru com capuz e bolso frontal. Ideal para dias frios, confortável e quentinho.",
     images: {
-      front: "/img/moletom-canguru-frente.jpg",
-      back: "/img/moletom-canguru-costas.jpg",
+      front: "/img/moletom-canguru-preta-frente.webp",
+      back: "/img/moletom-canguru-preta-costas.webp",
       variations: []
     },
     slug: "moletom-canguru",
     category: "moletons",
-    color: "preto",
+    color: "Preta",
     size: ["P", "M", "G", "GG"],
     isNew: true,
     isSeasonal: true,
@@ -163,8 +163,8 @@ export const products: Product[] = [
     price: 119.9,
     description: "Moletom careca com design minimalista. Perfeito para um visual casual e confortável.",
     images: {
-      front: "/img/moletom-careca-frente.jpg",
-      back: "/img/moletom-careca-costas.jpg",
+      front: "/img/moletom-careca-preta-frente.webp",
+      back: "/img/moletom-careca-preta-costas.webp",
       variations: []
     },
     slug: "moletom-careca",
@@ -185,13 +185,13 @@ export const products: Product[] = [
     price: 99.9,
     description: "Calça moletom confortável e versátil. Ideal para momentos de lazer e conforto.",
     images: {
-      front: "/img/calca-moletom-frente.jpg",
-      back: "/img/calca-moletom-costas.jpg",
+      front: "/img/calça-moletom-preta-frente.webp",
+      back: "/img/calça-moletom-preta-costas.webp",
       variations: []
     },
     slug: "calca-moletom",
     category: "calcas",
-    color: "preto",
+    color: "Preta",
     size: ["P", "M", "G", "GG"],
     isNew: false,
     isSeasonal: true,
@@ -207,8 +207,8 @@ export const products: Product[] = [
     price: 149.9,
     description: "Corta vento leve e resistente. Proteção contra vento e chuva leve com estilo.",
     images: {
-      front: "/img/corta-vento-frente.jpg",
-      back: "/img/corta-vento-costas.jpg",
+      front: "/img/corta-vento-preta-frente.webp",
+      back: "/img/corta-vento-preta-costas.webp",
       variations: []
     },
     slug: "corta-vento",
