@@ -19,14 +19,14 @@ const banners = [
 		id: 2,
 		title: "Temporada de Inverno",
 		description: "Peças quentes para os dias frios",
-		image: "/img/banner-inverno.jpg", // coloque sua imagem real aqui
+		image: "/img/banners/banner-inverno.jpg", // coloque sua imagem real aqui
 		link: "/catalogo?isSeasonal=true",
 	},
 	{
 		id: 3,
 		title: "Promoção Especial",
 		description: "Descontos imperdíveis",
-		image: "/img/banner-promocao.jpg", // coloque sua imagem real aqui
+		image: "/img/banners/banner-promocao.jpg", // coloque sua imagem real aqui
 		link: "/catalogo",
 	},
 ];

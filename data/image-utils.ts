@@ -27,31 +27,43 @@ export function getProductImagesAndColors(slug: string) {
   if (slug === "camiseta-basica") {
     return CORES.map((color) => ({
       color,
-      src: `/img/camiseta-basica-${color}-frente.webp`
+      src: `/img/camiseta-basica-${color}-frente.webp`,
+      back: `/img/camiseta-basica-${color}-costas.webp`
     }))
   }
-    if (slug === "Bermuda-Mauricinho") {
+  if (slug === "bermuda-mauricinho") {
     return CORES.map((color) => ({
       color,
-      src: `/img/bermuda-mauricinho-${color}-frente.webp`
+      src: `/img/bermuda-mauricinho-${color}-frente.webp`,
+      back: `/img/bermuda-mauricinho-${color}-costas.webp`
     }))
-  } 
+  }
   if (slug === "moletom-careca") {
     return CORES.map((color) => ({
       color,
-      src: `/img/moletom-careca-${color}-frente.webp`
+      src: `/img/moletom-careca-${color}-frente.webp`,
+      back: `/img/moletom-careca-${color}-costas.webp`
     }))
   }
   if (slug === "calca-moletom") {
     return CORES.map((color) => ({
       color,
-      src: `/img/calca-moletom-${color}-frente.webp`
+      src: `/img/calca-moletom-${color}-frente.webp`,
+      back: `/img/calca-moletom-${color}-costas.webp`
     }))
   }
-  if (slug === "Corta-vento") {
+  if (slug === "corta-vento") {
     return CORES.map((color) => ({
       color,
-      src: `/img/Corta-vento-${color}-frente.webp`
+      src: `/img/corta-vento-${color}-frente.webp`,
+      back: `/img/corta-vento-${color}-costas.webp`
+    }))
+  }
+  if (slug === "cropped") {
+    return CORES.map((color) => ({
+      color,
+      src: `/img/cropped-${color}-frente.webp`,
+      back: `/img/cropped-${color}-costas.webp`
     }))
   }
   return [];
