@@ -51,7 +51,7 @@ export function ProductCard({ product }: { product: Product }) {
             }
             alt={displayColor}
             className="object-contain w-full h-full rounded bg-white"
-            onError={e => { (e.target as HTMLImageElement).src = "/img/placeholder.jpg" }}
+            onError={e => { (e.target as HTMLImageElement).src = "/img/placeholder.webp" }}
           />
         </div>
         {/* Nome do produto */}
