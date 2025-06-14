@@ -49,6 +49,9 @@ export default function ProductPage({ params, searchParams }: Props) {
         (getProductImagesAndColors(product.slug)[0]?.color) || product.color
     );
 
+    // Estado para mostrar costas ou frente
+    const [showBack, setShowBack] = useState(false);
+
     // Recomendações aleatórias apenas no client para evitar hydration error
     const [recommendations, setRecommendations] = useState<typeof products | null>(null)
     const [mounted, setMounted] = useState(false)
@@ -135,12 +138,15 @@ export default function ProductPage({ params, searchParams }: Props) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 <div className="w-full flex flex-col items-center">
                     <div
-                        className="w-full max-w-[420px] aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center mb-4 transition-all duration-300"
+                        className="w-full max-w-[420px] aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center mb-4 transition-all duration-300 cursor-pointer"
+                        onMouseEnter={() => setShowBack(true)}
+                        onMouseLeave={() => setShowBack(false)}
+                        onClick={() => setShowBack((prev) => !prev)}
                     >
                         {/* Exibe a imagem da cor selecionada, se existir */}
                         {selectedImageObj ? (
                             <img
-                                src={selectedImageObj.src}
+                                src={showBack ? selectedImageObj.back || selectedImageObj.src : selectedImageObj.src}
                                 alt={selectedColor}
                                 className="object-cover w-full h-full"
                             />

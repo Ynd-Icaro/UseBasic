@@ -1,40 +1,35 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState, useEffect } from "react"
-import { Product } from "../data/product-types"
-import { getProductImagesAndColors, CORES_HEX } from "@/data/image-utils"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import Link from "next/link";
+import { useState } from "react";
+import { Product } from "../data/product-types";
+import { getProductImagesAndColors, CORES_HEX } from "@/data/image-utils";
 
-// Cores que devem aparecer no card
 const CARD_COLORS = [
-  "preta", "branco", "cinza", "verde", "vermelho"
-]
+  "preta", "branca", "cinza", "verde", "vermelho"
+];
 
 export function ProductCard({ product }: { product: Product }) {
-  // Busca as imagens e cores do produto
   const imagesAndColors = getProductImagesAndColors(product.slug)
     .filter(img => CARD_COLORS.some(cor => img.color.includes(cor)))
-    .slice(0, 5)
+    .slice(0, 5);
 
-  // Estado para cor e lado selecionados
-  const [selectedColor, setSelectedColor] = useState(imagesAndColors[0]?.color || CARD_COLORS[0])
-  const [isBack, setIsBack] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const [selectedColor, setSelectedColor] = useState(imagesAndColors[0]?.color || CARD_COLORS[0]);
+  const [showBack, setShowBack] = useState(false);
+  const [hoveredColor, setHoveredColor] = useState<string | null>(null);
 
-  useEffect(() => { setMounted(true); }, [])
+  const displayColor = hoveredColor || selectedColor;
+  const selectedImageObj = imagesAndColors.find(img => img.color === displayColor);
 
-  // Função para obter a imagem correta
-  const getImage = () => {
-    const base = `/img/camiseta-basica-${selectedColor}-${isBack ? "costas" : "frente"}.webp`
-    return imagesAndColors.find(img => img.color === selectedColor)?.src.replace("frente", isBack ? "costas" : "frente") || base
-  }
+  // Alterna entre frente/costas ao clicar na imagem
+  const handleImageClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowBack((prev) => !prev);
+  };
 
-  // Impede navegação ao clicar nos controles
-  const stopPropagation = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+  // Ao passar o mouse, mostra costas; ao sair, volta para frente
+  const handleMouseEnter = () => setShowBack(true);
+  const handleMouseLeave = () => setShowBack(false);
 
   return (
     <Link
@@ -42,70 +37,49 @@ export function ProductCard({ product }: { product: Product }) {
       className="block group border rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition"
     >
       <div className="mb-2 flex flex-col items-center">
-        {/* Imagem principal com setas */}
-        <div className="relative w-full max-w-[220px] aspect-square flex items-center justify-center mb-2">
-          <button
-            className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-1 z-10"
-            onClick={e => { stopPropagation(e); setIsBack(false); }}
-            tabIndex={0}
-            aria-label="Frente"
-            type="button"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
+        <div
+          className="relative w-full max-w-[220px] aspect-square flex items-center justify-center mb-2 cursor-pointer"
+          onClick={handleImageClick}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <img
-            src={getImage()}
-            alt={selectedColor}
+            src={
+              showBack
+                ? selectedImageObj?.back || selectedImageObj?.src
+                : selectedImageObj?.src
+            }
+            alt={displayColor}
             className="object-contain w-full h-full rounded bg-white"
-            onError={e => { (e.target as HTMLImageElement).src = "/img/placeholder.webp" }}
+            onError={e => { (e.target as HTMLImageElement).src = "/img/placeholder.jpg" }}
           />
-          <button
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-1 z-10"
-            onClick={e => { stopPropagation(e); setIsBack(true); }}
-            tabIndex={0}
-            aria-label="Costas"
-            type="button"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
         </div>
-        {/* Cores disponíveis */}
+        {/* Nome do produto */}
+        <div className="font-semibold text-base mb-1 text-center">{product.name}</div>
+        {/* Círculos de cor */}
         <div className="flex space-x-2 mb-2">
           {imagesAndColors.map(img => (
-            <button
+            <div
               key={img.color}
-              onClick={() => setSelectedColor(img.color)}
-              className={`w-6 h-6 rounded-full border-2 transition-all flex items-center justify-center ${selectedColor === img.color ? "ring-2 ring-offset-2 ring-indigo-500" : "border-transparent"}`}
+              className={`w-6 h-6 rounded-full border-2 transition-all flex items-center justify-center cursor-pointer
+                ${displayColor === img.color ? "ring-2 ring-offset-2 ring-indigo-500" : "border-transparent"}`}
               style={{ backgroundColor: CORES_HEX[img.color as keyof typeof CORES_HEX] }}
               aria-label={img.color}
-            >
-              {selectedColor === img.color && (
-                <span className="w-3 h-3 bg-white rounded-full" />
-              )}
-            </button>
+              onMouseEnter={() => setHoveredColor(img.color)}
+              onMouseLeave={() => setHoveredColor(null)}
+              onClick={e => {
+                e.preventDefault();
+                setSelectedColor(img.color);
+              }}
+              title={img.color}
+            />
           ))}
         </div>
+        {/* Mensagem de quantidade mínima */}
+        <div className="text-xs text-gray-500 mb-2 text-center">
+          Pedido mínimo: 10 unidades
+        </div>
       </div>
-      <div className="px-4 pb-4">
-        <h2 className="font-semibold text-lg mb-1">{product.name}</h2>
-        <div className="text-gray-600 text-sm mb-1 capitalize">{product.category}</div>
-        <div className="font-bold text-xl mb-2">R$ {product.price.toFixed(2)}</div>
-        {product.isNew && (
-          <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded mr-2">
-            Novo
-          </span>
-        )}
-        {product.isSeasonal && (
-          <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
-            Temporada
-          </span>
-        )}
-      </div>
-      {mounted && (
-        <section>
-          {/* ...conteúdo dinâmico... */}
-        </section>
-      )}
     </Link>
-  )
+  );
 }
